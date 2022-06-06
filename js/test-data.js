@@ -2,10 +2,19 @@ import {
   getRandomPositiveFloatNumber,
   getRandomPositiveNumber,
   getRandomArrayElement,
+  getRandomArrayElements,
   insertZeroBeforeDigit,
+  createArray,
+  getRandomNoRepeatValuesFromArray,
 } from './utils.js';
 
-const HOUSE_TITLE = [
+const SIMILAR_PLACES_COUNT = 10;
+const MIN_MAX_NUMBERS = {
+  min: 1,
+  max: 100,
+};
+const IMAGE_NUMBERS = createArray(1, SIMILAR_PLACES_COUNT);
+const HOUSE_TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
   'Огромный прекрасный дворец',
@@ -31,11 +40,6 @@ const PLACE_FEATURES = [
   'elevator',
   'conditioner',
 ];
-const SIMILAR_PLACES_COUNT = 10;
-const MIN_MAX_NUMBERS = {
-  min: 1,
-  max: 100,
-};
 const DESCRIPTIONS = [
   'Неуютное место за большие деньги',
   ' Та еще конура',
@@ -43,38 +47,27 @@ const DESCRIPTIONS = [
 ];
 
 const createPlace = () => {
-  const placeFeaturesArr = PLACE_FEATURES.slice(
-    0,
-    getRandomPositiveNumber(0, PLACE_FEATURES.length)
-  );
-  const placePhotosArr = PLACE_PHOTOS.slice(
-    0,
-    getRandomPositiveNumber(0, PLACE_FEATURES.length)
-  );
   const lat = getRandomPositiveFloatNumber(35.65, 35.7, 4);
   const lng = getRandomPositiveFloatNumber(139.7, 139.8, 4);
 
   const place = {
     author: {
       avatar: `img/avatars/user${insertZeroBeforeDigit(
-        getRandomPositiveNumber(1, SIMILAR_PLACES_COUNT)
-      )}.png`, // Не получилось придумать, как сделать так, чтобы значения не повторялись
+        getRandomNoRepeatValuesFromArray(IMAGE_NUMBERS, 1)[0]
+      )}.png`,
     },
     offer: {
-      title: getRandomArrayElement(HOUSE_TITLE),
-      address: {
-        lat: lat.toString(),
-        lng: lng.toString(),
-      },
+      title: getRandomArrayElement(HOUSE_TITLES),
+      address: `${lat.toString()} ${lng.toString()}`,
       price: getRandomPositiveNumber(MIN_MAX_NUMBERS.min, MIN_MAX_NUMBERS.max),
       type: getRandomArrayElement(PLACE_TYPES),
       rooms: getRandomPositiveNumber(MIN_MAX_NUMBERS.min, MIN_MAX_NUMBERS.max),
       guests: getRandomPositiveNumber(MIN_MAX_NUMBERS.min, MIN_MAX_NUMBERS.max),
       checkin: getRandomArrayElement(PLACE_CHECHIN),
       checkout: getRandomArrayElement(PLACE_CHECHOUT),
-      features: placeFeaturesArr,
+      features: getRandomArrayElements(PLACE_FEATURES),
       description: getRandomArrayElement(DESCRIPTIONS),
-      photos: placePhotosArr,
+      photos: getRandomArrayElements(PLACE_PHOTOS),
     },
     location: {
       lat: lat,

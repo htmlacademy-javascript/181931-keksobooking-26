@@ -23,16 +23,50 @@ function getRandomPositiveFloatNumber(min, max, count) {
 const getRandomArrayElement = (elements) =>
   elements[getRandomPositiveNumber(0, elements.length - 1)];
 
-function insertZeroBeforeDigit(digit) {
+const getRandomArrayElements = (elements) =>
+  elements.slice(0, getRandomPositiveNumber(0, elements.length));
+
+const insertZeroBeforeDigit = (digit) => {
   if (String(digit).length === 1) {
     return `0${digit}`;
   }
   return digit;
-}
+};
+
+const createArray = (start, end) => {
+  const arr = [];
+
+  for (let i = start; i <= end; i++) {
+    arr.push(i);
+  }
+
+  return arr;
+};
+
+const getRandomNoRepeatValuesFromArray = (source, quantity) => {
+  const randomValues = [];
+
+  if (source.length < quantity) {
+    return null;
+  }
+
+  for (let i = 0; i < quantity; i++) {
+    const elements = source.splice(
+      getRandomPositiveNumber(0, source.length - 1),
+      1
+    );
+    randomValues.push(elements[0]);
+  }
+
+  return randomValues;
+};
 
 export {
   getRandomPositiveNumber,
   getRandomPositiveFloatNumber,
   getRandomArrayElement,
+  getRandomArrayElements,
   insertZeroBeforeDigit,
+  createArray,
+  getRandomNoRepeatValuesFromArray,
 };
