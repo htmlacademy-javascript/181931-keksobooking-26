@@ -30,6 +30,13 @@ const PLACE_PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 const PLACE_TYPES = ['palace', 'flat', 'house', 'bungalow', 'hotel'];
+const TYPE = {
+  flat: 'Квартира',
+  bungalow: 'Бунгало',
+  house: 'Дом',
+  palace: 'Дворец',
+  hotel: 'Отель',
+};
 const PLACE_CHECHIN = ['12:00', '13:00', '14:00'];
 const PLACE_CHECHOUT = ['12:00', '13:00', '14:00'];
 const PLACE_FEATURES = [
@@ -46,7 +53,7 @@ const DESCRIPTIONS = [
   'Это правда хорошее место',
 ];
 
-const createPlace = () => {
+const createPlaces = () => {
   const lat = getRandomPositiveFloatNumber(35.65, 35.7, 4);
   const lng = getRandomPositiveFloatNumber(139.7, 139.8, 4);
 
@@ -78,4 +85,4 @@ const createPlace = () => {
   return place;
 };
 
-export { createPlace, SIMILAR_PLACES_COUNT };
+export { createPlaces, TYPE };

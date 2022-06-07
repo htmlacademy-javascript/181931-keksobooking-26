@@ -61,6 +61,11 @@ const getRandomNoRepeatValuesFromArray = (source, quantity) => {
   return randomValues;
 };
 
+const createElement = (parentElem, elem, content) => {
+  const element = parentElem.querySelector(elem);
+  element.textContent = content;
+};
+
 export {
   getRandomPositiveNumber,
   getRandomPositiveFloatNumber,
@@ -69,4 +74,5 @@ export {
   insertZeroBeforeDigit,
   createArray,
   getRandomNoRepeatValuesFromArray,
+  createElement,
 };
