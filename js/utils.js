@@ -61,9 +61,52 @@ const getRandomNoRepeatValuesFromArray = (source, quantity) => {
   return randomValues;
 };
 
-const createElement = (parentElem, elem, content) => {
+const setElementContent = (parentElem, elem, content) => {
   const element = parentElem.querySelector(elem);
   element.textContent = content;
+};
+
+const removeElement = (element) => {
+  element.remove();
+};
+
+const hideElement = (element) => {
+  element.classList.add('hidden');
+};
+
+const setAttributes = (el, attrs) => {
+  for (const key in attrs) {
+    el.setAttribute(key, attrs[key]);
+  }
+};
+
+const numWord = (value, words) => {
+  value = Math.abs(value) % 100;
+  const num = value % 10;
+  if (value > 10 && value < 20) {
+    return words[2];
+  }
+  if (num > 1 && num < 5) {
+    return words[1];
+  }
+  if (num === 1) {
+    return words[0];
+  }
+  return words[2];
+};
+
+const disableForm = (element) => {
+  element.classList.add('ad-form--disabled');
+  element.querySelectorAll('input, select, textarea').forEach((item) => {
+    item.setAttribute('disabled', 'disabled');
+  });
+};
+
+const enableForm = (element) => {
+  element.classList.remove('ad-form--disabled');
+  element.querySelectorAll('input, select, textarea').forEach((item) => {
+    item.removeAttribute('disabled');
+  });
 };
 
 export {
@@ -74,5 +117,11 @@ export {
   insertZeroBeforeDigit,
   createArray,
   getRandomNoRepeatValuesFromArray,
-  createElement,
+  setElementContent,
+  removeElement,
+  hideElement,
+  setAttributes,
+  numWord,
+  disableForm,
+  enableForm,
 };

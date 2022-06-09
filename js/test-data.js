@@ -53,7 +53,12 @@ const DESCRIPTIONS = [
   'Это правда хорошее место',
 ];
 
-const createPlaces = () => {
+const DECLENSIONS = {
+  rooms: ['комната', 'комнаты', 'комнат'],
+  guests: ['гостя', 'гостей', 'гостей'],
+};
+
+const createPlace = () => {
   const lat = getRandomPositiveFloatNumber(35.65, 35.7, 4);
   const lng = getRandomPositiveFloatNumber(139.7, 139.8, 4);
 
@@ -85,4 +90,6 @@ const createPlaces = () => {
   return place;
 };
 
-export { createPlaces, TYPE };
+const OFFERS = Array.from({ length: 1 }, createPlace);
+
+export { createPlace, TYPE, DECLENSIONS, OFFERS };
