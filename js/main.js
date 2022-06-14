@@ -1,9 +1,15 @@
 import { OFFERS } from './test-data.js';
 import { createCardElement } from './create-card.js';
-import './form.js';
-import './filters.js';
+import { disableAdForm, enableAdForm } from './form.js';
+import { disableFilterForm, enableFilterForm } from './filters.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  disableAdForm();
+  enableAdForm();
+
+  disableFilterForm();
+  enableFilterForm();
+
   const similarListFragment = document.createDocumentFragment();
   const mapCanvas = document.querySelector('.map__canvas');
 
