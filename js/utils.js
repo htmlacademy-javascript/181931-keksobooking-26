@@ -95,15 +95,15 @@ const numWord = (value, words) => {
   return words[2];
 };
 
-const disableForm = (element) => {
-  element.classList.add('ad-form--disabled');
+const disableForm = (element, toggleClass) => {
+  element.classList.add(toggleClass);
   element.querySelectorAll('input, select, textarea').forEach((item) => {
     item.setAttribute('disabled', 'disabled');
   });
 };
 
-const enableForm = (element) => {
-  element.classList.remove('ad-form--disabled');
+const enableForm = (element, toggleClass) => {
+  element.classList.remove(toggleClass);
   element.querySelectorAll('input, select, textarea').forEach((item) => {
     item.removeAttribute('disabled');
   });
