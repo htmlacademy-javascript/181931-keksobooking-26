@@ -109,6 +109,14 @@ const enableForm = (element, toggleClass) => {
   });
 };
 
+const changePlaceholderAndAttr = (element, targetEl, price, PriceRange) => {
+  setAttributes(element, {
+    placeholder: price[targetEl.value],
+    min: price[targetEl.value],
+    max: PriceRange,
+  });
+};
+
 export {
   getRandomPositiveNumber,
   getRandomPositiveFloatNumber,
@@ -124,4 +132,5 @@ export {
   numWord,
   disableForm,
   enableForm,
+  changePlaceholderAndAttr,
 };
