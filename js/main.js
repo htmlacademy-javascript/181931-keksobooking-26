@@ -3,12 +3,13 @@ import { createCardElement } from './create-card.js';
 import {
   disableAdForm,
   enableAdForm,
-  enableAdFromValidation,
-  typePrice,
+  // enableAdFromValidation,
+  TypePrice,
   PriceRange,
 } from './form.js';
 import { disableFilterForm, enableFilterForm } from './filters.js';
 import { changePlaceholderAndAttr } from './utils.js';
+import './form.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   disableAdForm();
@@ -20,12 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
   changePlaceholderAndAttr(
     formPriceField,
     houseTypeField,
-    typePrice,
+    TypePrice,
     PriceRange.max
   );
   enableAdForm();
   enableFilterForm();
-  enableAdFromValidation();
+  // enableAdFromValidation();
 
   const similarListFragment = document.createDocumentFragment();
   const mapCanvas = document.querySelector('.map__canvas');
@@ -39,9 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
     changePlaceholderAndAttr(
       formPriceField,
       houseTypeField,
-      typePrice,
+      TypePrice,
       PriceRange.max
     );
-    enableAdFromValidation();
+    // enableAdFromValidation();
   });
 });

@@ -11,7 +11,7 @@ const PriceRange = {
   max: 100000,
 };
 
-const typePrice = {
+const TypePrice = {
   flat: 1000,
   bungalow: 0,
   house: 5000,
@@ -50,15 +50,18 @@ const enableAdFromValidation = () => {
   const placeFieldType = form.querySelector('#type');
 
   const validatePrice = (value) =>
-    value >= typePrice[placeFieldType.value] && value <= PriceRange.max;
+    value >= TypePrice[placeFieldType.value] && value <= PriceRange.max;
 
-  // const getPriceErrorMessage = () =>
-  //   `Минимальная цена ${typePrice[placeFieldType.value]}. Максимальная цена — ${
-  //     PriceRange.max
-  //   }`;
-  // Хотел вывести кастомное сообщение, но выводится и кастомное и стандартное браузерное. Пока решил оставить только браузерное.
+  const getPriceErrorMessage = () =>
+    `Минимальная цена ${TypePrice[placeFieldType.value]}. Максимальная цена — ${
+      PriceRange.max
+    }`;
 
-  pristine.addValidator(priceField, validatePrice);
+  pristine.addValidator(priceField, validatePrice, getPriceErrorMessage, false);
+
+  placeFieldType.addEventListener('change', () => {
+    pristine.validate(priceField);
+  });
 
   const roomsField = form.querySelector('#room_number');
   const guestsField = form.querySelector('#capacity');
@@ -75,11 +78,13 @@ const enableAdFromValidation = () => {
     'Количество гостей должно быть меньше или равно количеству комнат'
   );
 
-  pristine.addValidator(
-    roomsField,
-    validateRoomsFieldAndGuests,
-    'Количество комнат должно быть меньше или равно количеству гостей'
-  );
+  roomsField.addEventListener('change', () => {
+    pristine.validate(guestsField);
+  });
+
+  guestsField.addEventListener('change', () => {
+    pristine.validate(roomsField);
+  });
 
   const timeIn = form.querySelector('#timein');
   const timeOut = form.querySelector('#timeout');
@@ -101,10 +106,12 @@ const enableAdFromValidation = () => {
   });
 };
 
+enableAdFromValidation();
+
 export {
   disableAdForm,
   enableAdForm,
   enableAdFromValidation,
-  typePrice,
+  TypePrice,
   PriceRange,
 };
