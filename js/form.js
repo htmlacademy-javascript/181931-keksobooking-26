@@ -57,7 +57,13 @@ const enableAdFromValidation = () => {
       PriceRange.max
     }`;
 
-  pristine.addValidator(priceField, validatePrice, getPriceErrorMessage, false);
+  pristine.addValidator(
+    priceField,
+    validatePrice,
+    getPriceErrorMessage,
+    90,
+    true
+  );
 
   placeFieldType.addEventListener('change', () => {
     pristine.validate(priceField);

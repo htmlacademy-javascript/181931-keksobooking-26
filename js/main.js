@@ -3,7 +3,7 @@ import { createCardElement } from './create-card.js';
 import {
   disableAdForm,
   enableAdForm,
-  // enableAdFromValidation,
+  enableAdFromValidation,
   TypePrice,
   PriceRange,
 } from './form.js';
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   );
   enableAdForm();
   enableFilterForm();
-  // enableAdFromValidation();
+  enableAdFromValidation();
 
   const similarListFragment = document.createDocumentFragment();
   const mapCanvas = document.querySelector('.map__canvas');
@@ -43,6 +43,5 @@ document.addEventListener('DOMContentLoaded', () => {
       TypePrice,
       PriceRange.max
     );
-    // enableAdFromValidation();
   });
 });
