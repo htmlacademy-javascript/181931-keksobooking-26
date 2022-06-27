@@ -57,6 +57,34 @@ const enableAdFromValidation = () => {
       PriceRange.max
     }`;
 
+  const sliderElement = document.querySelector('.ad-form__slider');
+
+  noUiSlider.create(sliderElement, {
+    range: {
+      min: TypePrice[placeFieldType.value],
+      max: PriceRange.max,
+    },
+    start: TypePrice[placeFieldType.value],
+    step: 1,
+    connect: 'lower',
+    format: {
+      to: function (value) {
+        if (Number.isInteger(value)) {
+          return value.toFixed(0);
+        }
+        return value.toFixed(1);
+      },
+      from: function (value) {
+        return parseFloat(value);
+      },
+    },
+  });
+
+  sliderElement.noUiSlider.on('update', () => {
+    priceField.value = sliderElement.noUiSlider.get();
+    pristine.validate(priceField);
+  });
+
   pristine.addValidator(
     priceField,
     validatePrice,
@@ -110,9 +138,10 @@ const enableAdFromValidation = () => {
     }
     evt.preventDefault();
   });
-};
 
-enableAdFromValidation();
+  const addressField = form.querySelector('#address');
+  addressField.setAttribute('disabled', '');
+};
 
 export {
   disableAdForm,
