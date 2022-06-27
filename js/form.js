@@ -1,6 +1,24 @@
 import { disableForm, enableForm } from './utils.js';
 const form = document.querySelector('.ad-form');
 
+const TitleLengthRange = {
+  MIN: 30,
+  MAX: 100,
+};
+
+const PriceRange = {
+  min: 0,
+  max: 100000,
+};
+
+const TypePrice = {
+  flat: 1000,
+  bungalow: 0,
+  house: 5000,
+  palace: 10000,
+  hotel: 3000,
+};
+
 const disableAdForm = () => {
   disableForm(form, 'ad-form--disabled');
 };
@@ -18,11 +36,6 @@ const enableAdFromValidation = () => {
 
   const titleField = form.querySelector('#title');
 
-  const TitleLengthRange = {
-    MIN: 30,
-    MAX: 100,
-  };
-
   const validateTitle = (value) =>
     value.length >= TitleLengthRange.MIN &&
     value.length <= TitleLengthRange.MAX;
@@ -33,23 +46,33 @@ const enableAdFromValidation = () => {
     `От ${TitleLengthRange.MIN} до ${TitleLengthRange.MAX} символов`
   );
 
-  const amountField = form.querySelector('#price');
-  const maxPrice = {
-    min: 0,
-    max: 100000,
-  };
+  const priceField = form.querySelector('#price');
+  const placeFieldType = form.querySelector('#type');
 
-  const validateAmount = (value) =>
-    value > maxPrice.min && value <= maxPrice.max;
+  const validatePrice = (value) =>
+    value >= TypePrice[placeFieldType.value] && value <= PriceRange.max;
 
-  const getAmountErrorMessage = () => `Максимальное значение — ${maxPrice.max}`;
+  const getPriceErrorMessage = () =>
+    `Минимальная цена ${TypePrice[placeFieldType.value]}. Максимальная цена — ${
+      PriceRange.max
+    }`;
 
-  pristine.addValidator(amountField, validateAmount, getAmountErrorMessage);
+  pristine.addValidator(
+    priceField,
+    validatePrice,
+    getPriceErrorMessage,
+    90,
+    true
+  );
+
+  placeFieldType.addEventListener('change', () => {
+    pristine.validate(priceField);
+  });
 
   const roomsField = form.querySelector('#room_number');
   const guestsField = form.querySelector('#capacity');
 
-  const validateroomsFieldAndGuests = () =>
+  const validateRoomsFieldAndGuests = () =>
     (Number(roomsField.value) === 100 && Number(guestsField.value) === 0) ||
     (Number(guestsField.value) <= Number(roomsField.value) &&
       Number(roomsField.value) !== 100 &&
@@ -57,9 +80,28 @@ const enableAdFromValidation = () => {
 
   pristine.addValidator(
     guestsField,
-    validateroomsFieldAndGuests,
+    validateRoomsFieldAndGuests,
     'Количество гостей должно быть меньше или равно количеству комнат'
   );
+
+  roomsField.addEventListener('change', () => {
+    pristine.validate(guestsField);
+  });
+
+  guestsField.addEventListener('change', () => {
+    pristine.validate(roomsField);
+  });
+
+  const timeIn = form.querySelector('#timein');
+  const timeOut = form.querySelector('#timeout');
+
+  timeIn.addEventListener('change', () => {
+    timeOut.value = timeIn.value;
+  });
+
+  timeOut.addEventListener('change', () => {
+    timeIn.value = timeOut.value;
+  });
 
   form.addEventListener('submit', (evt) => {
     const isValid = pristine.validate();
@@ -70,4 +112,12 @@ const enableAdFromValidation = () => {
   });
 };
 
-export { disableAdForm, enableAdForm, enableAdFromValidation };
+enableAdFromValidation();
+
+export {
+  disableAdForm,
+  enableAdForm,
+  enableAdFromValidation,
+  TypePrice,
+  PriceRange,
+};
