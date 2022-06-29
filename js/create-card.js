@@ -58,7 +58,7 @@ const createCardElement = ({ offer, author }) => {
   const photosContainer = cardElement.querySelector('.popup__photos');
   photosContainer.innerHTML = '';
 
-  if (offer.photos.length > 0) {
+  if (offer.photos) {
     for (let i = 0; i < offer.photos.length; i++) {
       const photo = document.createElement('img');
       photo.classList.add('popup__photo');

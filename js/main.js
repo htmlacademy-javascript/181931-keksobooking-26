@@ -1,18 +1,17 @@
 import {
   disableAdForm,
-  enableAdFromValidation,
+  setUserFormSubmit,
   TypePrice,
   PriceRange,
 } from './form.js';
 import { disableFilterForm, enableFilterForm } from './filters.js';
 import { changePlaceholderAndAttr } from './utils.js';
-import { initMap } from './map.js';
+import './map.js';
+import { successPopup, errorPopup } from './popup.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   disableAdForm();
   disableFilterForm();
-
-  initMap();
 
   const formPriceField = document.querySelector('#price');
   const houseTypeField = document.querySelector('#type');
@@ -24,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     PriceRange.max
   );
   enableFilterForm();
-  enableAdFromValidation();
+
+  setUserFormSubmit(successPopup, errorPopup);
 
   houseTypeField.addEventListener('change', () => {
     changePlaceholderAndAttr(

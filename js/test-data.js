@@ -92,4 +92,4 @@ const createPlace = () => {
 
 const OFFERS = Array.from({ length: 1 }, createPlace);
 
-export { createPlace, TYPE, DECLENSIONS, OFFERS };
+export { createPlace, TYPE, DECLENSIONS, OFFERS, SIMILAR_PLACES_COUNT };
