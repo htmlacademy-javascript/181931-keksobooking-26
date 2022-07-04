@@ -20,14 +20,15 @@ const showError = (error) => {
   }, ALERT_SHOW_TIME);
 };
 
-const getData = (onSuccess, onFail) => {
-  fetch('https://26.javascript.pages.academy/keksobooking/data')
-    .then((response) => response.json())
-    .then((offers) => {
-      onSuccess(offers);
-    })
-    .catch(onFail);
-};
+const getData = () =>
+  new Promise((resolve, reject) => {
+    fetch('https://26.javascript.pages.academy/keksobooking/data')
+      .then((response) => response.json())
+      .then((offers) => {
+        resolve(offers);
+      })
+      .catch(reject);
+  });
 
 const sendData = (onSuccess, onFail, body) => {
   fetch('https://26.javascript.pages.academy/keksobooking', {

@@ -1,37 +1,22 @@
-import {
-  disableAdForm,
-  setUserFormSubmit,
-  TypePrice,
-  PriceRange,
-} from './form.js';
+import { disableAdForm } from './form.js';
+import { enableAdForm } from './form.js';
 import { disableFilterForm, enableFilterForm } from './filters.js';
-import { changePlaceholderAndAttr } from './utils.js';
-import './map.js';
-import { successPopup, errorPopup } from './popup.js';
+import { enableMap } from './map.js';
+import { getData, showError } from './api.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   disableAdForm();
   disableFilterForm();
 
-  const formPriceField = document.querySelector('#price');
-  const houseTypeField = document.querySelector('#type');
+  const { setMarkerMoveHandler, resetMarker, setMarkers } = await enableMap();
 
-  changePlaceholderAndAttr(
-    formPriceField,
-    houseTypeField,
-    TypePrice,
-    PriceRange.max
-  );
-  enableFilterForm();
+  enableAdForm(setMarkerMoveHandler, resetMarker);
 
-  setUserFormSubmit(successPopup, errorPopup);
-
-  houseTypeField.addEventListener('change', () => {
-    changePlaceholderAndAttr(
-      formPriceField,
-      houseTypeField,
-      TypePrice,
-      PriceRange.max
-    );
-  });
+  try {
+    const offers = await getData();
+    enableFilterForm();
+    setMarkers(offers);
+  } catch (err) {
+    showError('Не удалось получить данные. Попробуйте ещё раз');
+  }
 });
