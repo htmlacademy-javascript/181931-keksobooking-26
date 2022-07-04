@@ -1,4 +1,6 @@
-import { disableForm, enableForm } from './utils.js';
+import { disableForm, enableForm, changePlaceholderAndAttr } from './utils.js';
+import { sendData } from './api.js';
+import { successPopup, errorPopup } from './popup.js';
 const form = document.querySelector('.ad-form');
 
 const TitleLengthRange = {
@@ -22,12 +24,7 @@ const TypePrice = {
 const disableAdForm = () => {
   disableForm(form, 'ad-form--disabled');
 };
-
-const enableAdForm = () => {
-  enableForm(form, 'ad-form--disabled');
-};
-
-const enableAdFromValidation = () => {
+const enableValidation = (resetMarker) => {
   const pristine = new Pristine(form, {
     classTo: 'ad-form__element',
     errorTextParent: 'ad-form__element',
@@ -95,6 +92,33 @@ const enableAdFromValidation = () => {
 
   placeFieldType.addEventListener('change', () => {
     pristine.validate(priceField);
+    sliderElement.noUiSlider.updateOptions({
+      range: {
+        min: TypePrice[placeFieldType.value],
+        max: PriceRange.max,
+      },
+      start: TypePrice[placeFieldType.value],
+    });
+  });
+
+  priceField.addEventListener('change', () => {
+    sliderElement.noUiSlider.set(priceField.value);
+  });
+
+  changePlaceholderAndAttr(
+    priceField,
+    placeFieldType,
+    TypePrice,
+    PriceRange.max
+  );
+
+  placeFieldType.addEventListener('change', () => {
+    changePlaceholderAndAttr(
+      priceField,
+      placeFieldType,
+      TypePrice,
+      PriceRange.max
+    );
   });
 
   const roomsField = form.querySelector('#room_number');
@@ -131,22 +155,69 @@ const enableAdFromValidation = () => {
     timeIn.value = timeOut.value;
   });
 
+  const submitButton = form.querySelector('.ad-form__submit');
+
+  const blockSubmitButton = () => {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Отправляю...';
+  };
+
+  const unblockSubmitButton = () => {
+    submitButton.disabled = false;
+    submitButton.textContent = 'Опубликовать';
+  };
+
+  const resetForm = () => {
+    form.reset();
+  };
+
+  // const setUserFormSubmit = (onSuccess, onFail) => {
   form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
     const isValid = pristine.validate();
     if (isValid) {
-      return true;
+      blockSubmitButton();
+      sendData(
+        () => {
+          // onSuccess();
+          unblockSubmitButton();
+          successPopup().then(() => {
+            resetMarker();
+            resetForm();
+          });
+        },
+        () => {
+          errorPopup().then(() => {
+            unblockSubmitButton();
+          });
+          // onFail();
+        },
+        new FormData(evt.target)
+      );
     }
-    evt.preventDefault();
   });
+  // };
+};
+
+const enableAdForm = (setMarkerMoveHandler, resetMarker) => {
+  enableForm(form, 'ad-form--disabled');
 
   const addressField = form.querySelector('#address');
-  addressField.setAttribute('disabled', '');
+  addressField.setAttribute('readonly', 'readonly');
+  setMarkerMoveHandler((coords) => {
+    addressField.value = coords;
+  });
+
+  enableValidation(resetMarker);
+  // resetMarker();
 };
 
 export {
   disableAdForm,
   enableAdForm,
-  enableAdFromValidation,
+  // resetForm,
+  // setUserFormSubmit,
   TypePrice,
   PriceRange,
 };

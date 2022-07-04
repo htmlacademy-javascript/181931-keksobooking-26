@@ -1,37 +1,22 @@
-import {
-  disableAdForm,
-  enableAdFromValidation,
-  TypePrice,
-  PriceRange,
-} from './form.js';
+import { disableAdForm } from './form.js';
+import { enableAdForm } from './form.js';
 import { disableFilterForm, enableFilterForm } from './filters.js';
-import { changePlaceholderAndAttr } from './utils.js';
-import { initMap } from './map.js';
+import { enableMap } from './map.js';
+import { getData, showError } from './api.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   disableAdForm();
   disableFilterForm();
 
-  initMap();
+  const { setMarkerMoveHandler, resetMarker, setMarkers } = await enableMap();
 
-  const formPriceField = document.querySelector('#price');
-  const houseTypeField = document.querySelector('#type');
+  enableAdForm(setMarkerMoveHandler, resetMarker);
 
-  changePlaceholderAndAttr(
-    formPriceField,
-    houseTypeField,
-    TypePrice,
-    PriceRange.max
-  );
-  enableFilterForm();
-  enableAdFromValidation();
-
-  houseTypeField.addEventListener('change', () => {
-    changePlaceholderAndAttr(
-      formPriceField,
-      houseTypeField,
-      TypePrice,
-      PriceRange.max
-    );
-  });
+  try {
+    const offers = await getData();
+    enableFilterForm();
+    setMarkers(offers);
+  } catch (err) {
+    showError('Не удалось получить данные. Попробуйте ещё раз');
+  }
 });
