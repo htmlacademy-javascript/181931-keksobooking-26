@@ -1,5 +1,6 @@
-import { disableForm, enableForm } from './utils.js';
+import { disableForm, enableForm, changePlaceholderAndAttr } from './utils.js';
 import { sendData } from './api.js';
+import { successPopup, errorPopup } from './popup.js';
 const form = document.querySelector('.ad-form');
 
 const TitleLengthRange = {
@@ -23,144 +24,154 @@ const TypePrice = {
 const disableAdForm = () => {
   disableForm(form, 'ad-form--disabled');
 };
+const enableValidation = (resetMarker) => {
+  const pristine = new Pristine(form, {
+    classTo: 'ad-form__element',
+    errorTextParent: 'ad-form__element',
+    errorTextClass: 'ad-form__error-text',
+  });
 
-const enableAdForm = () => {
-  enableForm(form, 'ad-form--disabled');
+  const titleField = form.querySelector('#title');
 
-  const addressField = form.querySelector('#address');
-  addressField.setAttribute('readonly', 'readonly');
-};
+  const validateTitle = (value) =>
+    value.length >= TitleLengthRange.MIN &&
+    value.length <= TitleLengthRange.MAX;
 
-const pristine = new Pristine(form, {
-  classTo: 'ad-form__element',
-  errorTextParent: 'ad-form__element',
-  errorTextClass: 'ad-form__error-text',
-});
+  pristine.addValidator(
+    titleField,
+    validateTitle,
+    `От ${TitleLengthRange.MIN} до ${TitleLengthRange.MAX} символов`
+  );
 
-const titleField = form.querySelector('#title');
+  const priceField = form.querySelector('#price');
+  const placeFieldType = form.querySelector('#type');
 
-const validateTitle = (value) =>
-  value.length >= TitleLengthRange.MIN && value.length <= TitleLengthRange.MAX;
+  const validatePrice = (value) =>
+    value >= TypePrice[placeFieldType.value] && value <= PriceRange.max;
 
-pristine.addValidator(
-  titleField,
-  validateTitle,
-  `От ${TitleLengthRange.MIN} до ${TitleLengthRange.MAX} символов`
-);
+  const getPriceErrorMessage = () =>
+    `Минимальная цена ${TypePrice[placeFieldType.value]}. Максимальная цена — ${
+      PriceRange.max
+    }`;
 
-const priceField = form.querySelector('#price');
-const placeFieldType = form.querySelector('#type');
+  const sliderElement = document.querySelector('.ad-form__slider');
 
-const validatePrice = (value) =>
-  value >= TypePrice[placeFieldType.value] && value <= PriceRange.max;
-
-const getPriceErrorMessage = () =>
-  `Минимальная цена ${TypePrice[placeFieldType.value]}. Максимальная цена — ${
-    PriceRange.max
-  }`;
-
-const sliderElement = document.querySelector('.ad-form__slider');
-
-noUiSlider.create(sliderElement, {
-  range: {
-    min: TypePrice[placeFieldType.value],
-    max: PriceRange.max,
-  },
-  start: TypePrice[placeFieldType.value],
-  step: 1,
-  connect: 'lower',
-  format: {
-    to: function (value) {
-      if (Number.isInteger(value)) {
-        return value.toFixed(0);
-      }
-      return value.toFixed(1);
-    },
-    from: function (value) {
-      return parseFloat(value);
-    },
-  },
-});
-
-sliderElement.noUiSlider.on('update', () => {
-  priceField.value = sliderElement.noUiSlider.get();
-  pristine.validate(priceField);
-});
-
-pristine.addValidator(
-  priceField,
-  validatePrice,
-  getPriceErrorMessage,
-  90,
-  true
-);
-
-placeFieldType.addEventListener('change', () => {
-  pristine.validate(priceField);
-  sliderElement.noUiSlider.updateOptions({
+  noUiSlider.create(sliderElement, {
     range: {
       min: TypePrice[placeFieldType.value],
       max: PriceRange.max,
     },
     start: TypePrice[placeFieldType.value],
+    step: 1,
+    connect: 'lower',
+    format: {
+      to: function (value) {
+        if (Number.isInteger(value)) {
+          return value.toFixed(0);
+        }
+        return value.toFixed(1);
+      },
+      from: function (value) {
+        return parseFloat(value);
+      },
+    },
   });
-});
 
-priceField.addEventListener('change', () => {
-  sliderElement.noUiSlider.set(priceField.value);
-});
+  sliderElement.noUiSlider.on('update', () => {
+    priceField.value = sliderElement.noUiSlider.get();
+    pristine.validate(priceField);
+  });
 
-const roomsField = form.querySelector('#room_number');
-const guestsField = form.querySelector('#capacity');
+  pristine.addValidator(
+    priceField,
+    validatePrice,
+    getPriceErrorMessage,
+    90,
+    true
+  );
 
-const validateRoomsFieldAndGuests = () =>
-  (Number(roomsField.value) === 100 && Number(guestsField.value) === 0) ||
-  (Number(guestsField.value) <= Number(roomsField.value) &&
-    Number(roomsField.value) !== 100 &&
-    Number(guestsField.value) !== 0);
+  placeFieldType.addEventListener('change', () => {
+    pristine.validate(priceField);
+    sliderElement.noUiSlider.updateOptions({
+      range: {
+        min: TypePrice[placeFieldType.value],
+        max: PriceRange.max,
+      },
+      start: TypePrice[placeFieldType.value],
+    });
+  });
 
-pristine.addValidator(
-  guestsField,
-  validateRoomsFieldAndGuests,
-  'Количество гостей должно быть меньше или равно количеству комнат'
-);
+  priceField.addEventListener('change', () => {
+    sliderElement.noUiSlider.set(priceField.value);
+  });
 
-roomsField.addEventListener('change', () => {
-  pristine.validate(guestsField);
-});
+  changePlaceholderAndAttr(
+    priceField,
+    placeFieldType,
+    TypePrice,
+    PriceRange.max
+  );
 
-guestsField.addEventListener('change', () => {
-  pristine.validate(roomsField);
-});
+  placeFieldType.addEventListener('change', () => {
+    changePlaceholderAndAttr(
+      priceField,
+      placeFieldType,
+      TypePrice,
+      PriceRange.max
+    );
+  });
 
-const timeIn = form.querySelector('#timein');
-const timeOut = form.querySelector('#timeout');
+  const roomsField = form.querySelector('#room_number');
+  const guestsField = form.querySelector('#capacity');
 
-timeIn.addEventListener('change', () => {
-  timeOut.value = timeIn.value;
-});
+  const validateRoomsFieldAndGuests = () =>
+    (Number(roomsField.value) === 100 && Number(guestsField.value) === 0) ||
+    (Number(guestsField.value) <= Number(roomsField.value) &&
+      Number(roomsField.value) !== 100 &&
+      Number(guestsField.value) !== 0);
 
-timeOut.addEventListener('change', () => {
-  timeIn.value = timeOut.value;
-});
+  pristine.addValidator(
+    guestsField,
+    validateRoomsFieldAndGuests,
+    'Количество гостей должно быть меньше или равно количеству комнат'
+  );
 
-const submitButton = form.querySelector('.ad-form__submit');
+  roomsField.addEventListener('change', () => {
+    pristine.validate(guestsField);
+  });
 
-const blockSubmitButton = () => {
-  submitButton.disabled = true;
-  submitButton.textContent = 'Отправляю...';
-};
+  guestsField.addEventListener('change', () => {
+    pristine.validate(roomsField);
+  });
 
-const unblockSubmitButton = () => {
-  submitButton.disabled = false;
-  submitButton.textContent = 'Опубликовать';
-};
+  const timeIn = form.querySelector('#timein');
+  const timeOut = form.querySelector('#timeout');
 
-const resetForm = () => {
-  form.reset();
-};
+  timeIn.addEventListener('change', () => {
+    timeOut.value = timeIn.value;
+  });
 
-const setUserFormSubmit = (onSuccess, onFail) => {
+  timeOut.addEventListener('change', () => {
+    timeIn.value = timeOut.value;
+  });
+
+  const submitButton = form.querySelector('.ad-form__submit');
+
+  const blockSubmitButton = () => {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Отправляю...';
+  };
+
+  const unblockSubmitButton = () => {
+    submitButton.disabled = false;
+    submitButton.textContent = 'Опубликовать';
+  };
+
+  const resetForm = () => {
+    form.reset();
+  };
+
+  // const setUserFormSubmit = (onSuccess, onFail) => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
@@ -169,24 +180,44 @@ const setUserFormSubmit = (onSuccess, onFail) => {
       blockSubmitButton();
       sendData(
         () => {
-          onSuccess();
+          // onSuccess();
           unblockSubmitButton();
+          successPopup().then(() => {
+            resetMarker();
+            resetForm();
+          });
         },
         () => {
-          onFail();
-          unblockSubmitButton();
+          errorPopup().then(() => {
+            unblockSubmitButton();
+          });
+          // onFail();
         },
         new FormData(evt.target)
       );
     }
   });
+  // };
+};
+
+const enableAdForm = (setMarkerMoveHandler, resetMarker) => {
+  enableForm(form, 'ad-form--disabled');
+
+  const addressField = form.querySelector('#address');
+  addressField.setAttribute('readonly', 'readonly');
+  setMarkerMoveHandler((coords) => {
+    addressField.value = coords;
+  });
+
+  enableValidation(resetMarker);
+  // resetMarker();
 };
 
 export {
   disableAdForm,
   enableAdForm,
-  resetForm,
-  setUserFormSubmit,
+  // resetForm,
+  // setUserFormSubmit,
   TypePrice,
   PriceRange,
 };
