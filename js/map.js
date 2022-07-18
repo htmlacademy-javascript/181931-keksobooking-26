@@ -1,5 +1,9 @@
 import { SIMILAR_PLACES_COUNT } from './test-data.js';
 import { createCardElement } from './create-card.js';
+import { debounce } from './utils.js';
+import { filterOffers } from './filters.js';
+
+const RERENDER_DELAY = 500;
 
 const mainPin = {
   iconUrl: '../img/main-pin.svg',
@@ -76,6 +80,18 @@ function initMap(map) {
     offers.slice(0, SIMILAR_PLACES_COUNT).forEach((offer) => {
       createMarker(offer);
     });
+
+    const mapFiltersElement = document.querySelector('.map__filters');
+    mapFiltersElement.addEventListener(
+      'change',
+      debounce(() => {
+        markerGroup.clearLayers();
+        const filterArr = filterOffers(offers);
+        filterArr.slice(0, SIMILAR_PLACES_COUNT).forEach((offer) => {
+          createMarker(offer);
+        });
+      }, RERENDER_DELAY)
+    );
   };
 
   const resetMarker = () => {
@@ -100,7 +116,11 @@ function initMap(map) {
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
-  return { setMarkerMoveHandler, resetMarker, setMarkers };
+  return {
+    setMarkerMoveHandler,
+    resetMarker,
+    setMarkers,
+  };
 }
 
 export { enableMap };

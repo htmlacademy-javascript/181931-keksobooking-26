@@ -167,11 +167,81 @@ const enableValidation = (resetMarker) => {
     submitButton.textContent = 'Опубликовать';
   };
 
-  const resetForm = () => {
-    form.reset();
+  const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  const avatarImg = document.querySelector('.ad-form-header__preview img');
+  const avatarField = document.querySelector('#avatar');
+
+  avatarField.addEventListener('change', () => {
+    const file = avatarField.files[0];
+    const fileName = file.name.toLowerCase();
+
+    const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+    if (matches) {
+      avatarImg.src = URL.createObjectURL(file);
+    }
+  });
+
+  const DEFAULT_AVATAR = 'img/muffin-grey.svg';
+  const fileChooserAvatarElement = document.querySelector('#avatar');
+  const fileChooserImagesElement = document.querySelector('#images');
+  const avatarPreviewElement = document.querySelector(
+    '.ad-form-header__preview img'
+  );
+
+  const checkAvailableType = (file) =>
+    FILE_TYPES.some((it) => file.name.toLowerCase().endsWith(it));
+
+  const setAvatarChange = (fileChooser) => {
+    const file = fileChooser.files[0];
+
+    if (checkAvailableType(file)) {
+      avatarPreviewElement.src = URL.createObjectURL(file);
+    }
   };
 
-  // const setUserFormSubmit = (onSuccess, onFail) => {
+  const setPhotosChange = (fileChooser) => {
+    const file = fileChooser.files[0];
+
+    if (file && checkAvailableType(file)) {
+      const photo = document.createElement('img');
+      document.querySelector('.ad-form__photo').append(photo);
+      photo.src = URL.createObjectURL(file);
+    }
+  };
+
+  const clearPreview = () => {
+    const imagePreviewBlock = document.querySelector('.ad-form__photo');
+
+    const imgagePreview = imagePreviewBlock.querySelectorAll('img');
+
+    avatarPreviewElement.src = DEFAULT_AVATAR;
+
+    if (imgagePreview) {
+      imgagePreview.forEach((element) => {
+        element.remove();
+      });
+    }
+  };
+
+  fileChooserAvatarElement.addEventListener('change', (evt) =>
+    setAvatarChange(evt.target)
+  );
+  fileChooserImagesElement.addEventListener('change', (evt) =>
+    setPhotosChange(evt.target)
+  );
+
+  const resetForm = () => {
+    form.reset();
+    clearPreview();
+  };
+
+  const resetBtn = document.querySelector('.ad-form__reset');
+
+  resetBtn.addEventListener('click', () => {
+    resetForm();
+  });
+
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
@@ -180,7 +250,6 @@ const enableValidation = (resetMarker) => {
       blockSubmitButton();
       sendData(
         () => {
-          // onSuccess();
           unblockSubmitButton();
           successPopup().then(() => {
             resetMarker();
@@ -191,13 +260,11 @@ const enableValidation = (resetMarker) => {
           errorPopup().then(() => {
             unblockSubmitButton();
           });
-          // onFail();
         },
         new FormData(evt.target)
       );
     }
   });
-  // };
 };
 
 const enableAdForm = (setMarkerMoveHandler, resetMarker) => {
@@ -210,14 +277,6 @@ const enableAdForm = (setMarkerMoveHandler, resetMarker) => {
   });
 
   enableValidation(resetMarker);
-  // resetMarker();
 };
 
-export {
-  disableAdForm,
-  enableAdForm,
-  // resetForm,
-  // setUserFormSubmit,
-  TypePrice,
-  PriceRange,
-};
+export { disableAdForm, enableAdForm, TypePrice, PriceRange };
