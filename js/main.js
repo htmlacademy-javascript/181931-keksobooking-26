@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     const offers = await getData();
-    enableFilterForm();
     setMarkers(offers);
+    enableFilterForm();
   } catch (err) {
     showError('Не удалось получить данные. Попробуйте ещё раз');
   }
