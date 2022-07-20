@@ -76,9 +76,14 @@ const filterOffers = (offers) =>
       filterByPrice(offer)
   );
 
+const resetFilters = () => {
+  filters.reset();
+};
+
 export {
   disableFilterForm,
   enableFilterForm,
   filterOffers,
   filterByLivingType,
+  resetFilters,
 };

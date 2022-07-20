@@ -1,6 +1,7 @@
 import { disableForm, enableForm, changePlaceholderAndAttr } from './utils.js';
 import { sendData } from './api.js';
 import { successPopup, errorPopup } from './popup.js';
+import { resetFilters } from './filters.js';
 const form = document.querySelector('.ad-form');
 
 const TitleLengthRange = {
@@ -20,6 +21,8 @@ const TypePrice = {
   palace: 10000,
   hotel: 3000,
 };
+
+const DEFAULT_AVATAR = 'img/muffin-grey.svg';
 
 const disableAdForm = () => {
   disableForm(form, 'ad-form--disabled');
@@ -91,19 +94,20 @@ const enableValidation = (resetMarker) => {
   );
 
   placeFieldType.addEventListener('change', () => {
-    pristine.validate(priceField);
     sliderElement.noUiSlider.updateOptions({
       range: {
         min: TypePrice[placeFieldType.value],
         max: PriceRange.max,
       },
-      start: TypePrice[placeFieldType.value],
     });
+    pristine.validate(priceField);
   });
 
   priceField.addEventListener('change', () => {
     sliderElement.noUiSlider.set(priceField.value);
   });
+
+  const resetSliderElement = () => sliderElement.noUiSlider.set(priceField.min);
 
   changePlaceholderAndAttr(
     priceField,
@@ -111,15 +115,6 @@ const enableValidation = (resetMarker) => {
     TypePrice,
     PriceRange.max
   );
-
-  placeFieldType.addEventListener('change', () => {
-    changePlaceholderAndAttr(
-      priceField,
-      placeFieldType,
-      TypePrice,
-      PriceRange.max
-    );
-  });
 
   const roomsField = form.querySelector('#room_number');
   const guestsField = form.querySelector('#capacity');
@@ -181,8 +176,6 @@ const enableValidation = (resetMarker) => {
       avatarImg.src = URL.createObjectURL(file);
     }
   });
-
-  const DEFAULT_AVATAR = 'img/muffin-grey.svg';
   const fileChooserAvatarElement = document.querySelector('#avatar');
   const fileChooserImagesElement = document.querySelector('#images');
   const avatarPreviewElement = document.querySelector(
@@ -234,6 +227,9 @@ const enableValidation = (resetMarker) => {
   const resetForm = () => {
     form.reset();
     clearPreview();
+    resetMarker();
+    resetSliderElement();
+    resetFilters();
   };
 
   const resetBtn = document.querySelector('.ad-form__reset');
@@ -252,7 +248,6 @@ const enableValidation = (resetMarker) => {
         () => {
           unblockSubmitButton();
           successPopup().then(() => {
-            resetMarker();
             resetForm();
           });
         },
