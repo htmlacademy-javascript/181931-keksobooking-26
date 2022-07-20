@@ -197,21 +197,24 @@ const enableValidation = (resetMarker) => {
     const file = fileChooser.files[0];
 
     if (file && checkAvailableType(file)) {
+      const imagePreviewBlock = document.createElement('div');
+      imagePreviewBlock.classList.add('ad-form__photo');
+      const imagePreviewContainer = document.querySelector(
+        '.ad-form__photo-container'
+      );
+      imagePreviewContainer.append(imagePreviewBlock);
       const photo = document.createElement('img');
-      document.querySelector('.ad-form__photo').append(photo);
+      imagePreviewBlock.append(photo);
       photo.src = URL.createObjectURL(file);
     }
   };
 
   const clearPreview = () => {
-    const imagePreviewBlock = document.querySelector('.ad-form__photo');
-
-    const imgagePreview = imagePreviewBlock.querySelectorAll('img');
-
+    const imagePreviewBlock = document.querySelectorAll('.ad-form__photo');
     avatarPreviewElement.src = DEFAULT_AVATAR;
 
-    if (imgagePreview) {
-      imgagePreview.forEach((element) => {
+    if (imagePreviewBlock) {
+      imagePreviewBlock.forEach((element) => {
         element.remove();
       });
     }
