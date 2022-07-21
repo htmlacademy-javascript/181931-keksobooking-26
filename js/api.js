@@ -21,15 +21,15 @@ const showError = (error) => {
 };
 
 const getData = () =>
-  fetch('https://26.javascript.pages.academy/keksobooking/data').then(
-    (response) => {
+  fetch('https://26.javascript.pages.academy/keksobooking/data1')
+    .then((response) => {
       if (!response.ok) {
         throw new Error('No data');
       }
 
       return response.json();
-    }
-  );
+    })
+    .catch(() => showError('Не удалось получить данные. Попробуйте ещё раз'));
 
 const sendData = (onSuccess, onFail, body) => {
   fetch('https://26.javascript.pages.academy/keksobooking', {
@@ -48,4 +48,4 @@ const sendData = (onSuccess, onFail, body) => {
     });
 };
 
-export { getData, sendData, showError };
+export { getData, sendData };

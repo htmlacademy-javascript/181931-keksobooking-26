@@ -2,22 +2,17 @@ import { disableAdForm } from './form.js';
 import { enableAdForm } from './form.js';
 import { disableFilterForm, enableFilterForm } from './filters.js';
 import { enableMap } from './map.js';
-import { getData, showError } from './api.js';
+import { getData } from './api.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   disableAdForm();
   disableFilterForm();
 
-  const { setMarkerMoveHandler, resetMarker, setMarkers, closePlacePopup } =
-    await enableMap();
+  const { setMarkerMoveHandler, resetMarker, setMarkers } = await enableMap();
 
-  enableAdForm(setMarkerMoveHandler, resetMarker, closePlacePopup);
+  enableAdForm(setMarkerMoveHandler, resetMarker);
 
-  try {
-    const offers = await getData();
-    setMarkers(offers);
-    enableFilterForm();
-  } catch (err) {
-    showError('Не удалось получить данные. Попробуйте ещё раз');
-  }
+  const offers = await getData();
+  setMarkers(offers);
+  enableFilterForm();
 });
