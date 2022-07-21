@@ -1,4 +1,5 @@
 const ALERT_SHOW_TIME = 5000;
+const URL = 'https://26.javascript.pages.academy/keksobooking/';
 
 const showError = (error) => {
   const errorContainer = document.createElement('div');
@@ -21,17 +22,18 @@ const showError = (error) => {
 };
 
 const getData = () =>
-  new Promise((resolve, reject) => {
-    fetch('https://26.javascript.pages.academy/keksobooking/data')
-      .then((response) => response.json())
-      .then((offers) => {
-        resolve(offers);
-      })
-      .catch(reject);
-  });
+  fetch(`${URL}data`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('No data');
+      }
+
+      return response.json();
+    })
+    .catch(() => showError('Не удалось получить данные. Попробуйте ещё раз'));
 
 const sendData = (onSuccess, onFail, body) => {
-  fetch('https://26.javascript.pages.academy/keksobooking', {
+  fetch(URL, {
     method: 'POST',
     body,
   })
@@ -47,4 +49,4 @@ const sendData = (onSuccess, onFail, body) => {
     });
 };
 
-export { getData, sendData, showError };
+export { getData, sendData };

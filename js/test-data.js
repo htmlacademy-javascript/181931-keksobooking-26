@@ -90,6 +90,4 @@ const createPlace = () => {
   return place;
 };
 
-const OFFERS = Array.from({ length: 1 }, createPlace);
-
-export { createPlace, TYPE, DECLENSIONS, OFFERS, SIMILAR_PLACES_COUNT };
+export { createPlace, TYPE, DECLENSIONS, SIMILAR_PLACES_COUNT };
