@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   enableAdForm(setMarkerMoveHandler, resetMarker);
 
   const offers = await getData();
-  setMarkers(offers);
-  enableFilterForm();
+
+  if (offers) {
+    setMarkers(offers);
+    enableFilterForm();
+  }
 });
