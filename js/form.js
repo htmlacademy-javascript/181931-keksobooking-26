@@ -212,13 +212,11 @@ const enableValidation = (resetMarker) => {
   };
 
   const clearPreview = () => {
-    const imagePreviewBlock = document.querySelectorAll('.ad-form__photo');
+    const imagePreviewBlock = document.querySelector('.ad-form__photo img');
     avatarPreviewElement.src = DEFAULT_AVATAR;
 
     if (imagePreviewBlock) {
-      imagePreviewBlock.forEach((element) => {
-        element.remove();
-      });
+      imagePreviewBlock.remove();
     }
   };
 
