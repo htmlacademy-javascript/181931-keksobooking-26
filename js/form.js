@@ -1,6 +1,6 @@
 import { disableForm, enableForm, changePlaceholderAndAttr } from './utils.js';
 import { sendData } from './api.js';
-import { successPopup, errorPopup } from './popup.js';
+import { showSuccessPopup, showErrorPopup } from './popup.js';
 import { resetFilters } from './filters.js';
 import { mainPin } from './map.js';
 const form = document.querySelector('.ad-form');
@@ -254,10 +254,10 @@ const enableValidation = (resetMarker) => {
         () => {
           unblockSubmitButton();
           resetForm();
-          successPopup().then(() => {});
+          showSuccessPopup().then(() => {});
         },
         () => {
-          errorPopup().then(() => {
+          showErrorPopup().then(() => {
             unblockSubmitButton();
           });
         },

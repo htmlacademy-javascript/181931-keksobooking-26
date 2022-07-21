@@ -43,12 +43,12 @@ const showPopup = (message) => {
   });
 };
 
-const successPopup = () => showPopup(successElement);
+const showSuccessPopup = () => showPopup(successElement);
 
-const errorPopup = () => {
-  const errorButtonlClose = errorElement.querySelector('.error__button');
+const showErrorPopup = () => {
+  const errorButtonClose = errorElement.querySelector('.error__button');
 
-  errorButtonlClose.addEventListener('click', () => {
+  errorButtonClose.addEventListener('click', () => {
     onDocumentClick();
     closePopup(errorElement);
   });
@@ -56,4 +56,4 @@ const errorPopup = () => {
   return showPopup(errorElement);
 };
 
-export { successPopup, errorPopup };
+export { showSuccessPopup, showErrorPopup };
