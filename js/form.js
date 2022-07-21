@@ -2,7 +2,9 @@ import { disableForm, enableForm, changePlaceholderAndAttr } from './utils.js';
 import { sendData } from './api.js';
 import { successPopup, errorPopup } from './popup.js';
 import { resetFilters } from './filters.js';
+import { mainPin } from './map.js';
 const form = document.querySelector('.ad-form');
+const addressField = form.querySelector('#address');
 
 const TitleLengthRange = {
   MIN: 30,
@@ -194,17 +196,17 @@ const enableValidation = (resetMarker) => {
   };
 
   const setPhotosChange = (fileChooser) => {
+    const imagePreviewBlock = document.querySelector('.ad-form__photo');
+
+    if (imagePreviewBlock.querySelector('img')) {
+      imagePreviewBlock.querySelector('img').remove();
+    }
+
+    const photo = document.createElement('img');
+    imagePreviewBlock.append(photo);
     const file = fileChooser.files[0];
 
-    if (file && checkAvailableType(file)) {
-      const imagePreviewBlock = document.createElement('div');
-      imagePreviewBlock.classList.add('ad-form__photo');
-      const imagePreviewContainer = document.querySelector(
-        '.ad-form__photo-container'
-      );
-      imagePreviewContainer.append(imagePreviewBlock);
-      const photo = document.createElement('img');
-      imagePreviewBlock.append(photo);
+    if (checkAvailableType(file)) {
       photo.src = URL.createObjectURL(file);
     }
   };
@@ -229,6 +231,9 @@ const enableValidation = (resetMarker) => {
 
   const resetForm = () => {
     form.reset();
+    setTimeout(() => {
+      addressField.value = `${mainPin.lat}, ${mainPin.lng}`;
+    }, 100);
     clearPreview();
     resetMarker();
     resetSliderElement();
@@ -250,9 +255,8 @@ const enableValidation = (resetMarker) => {
       sendData(
         () => {
           unblockSubmitButton();
-          successPopup().then(() => {
-            resetForm();
-          });
+          resetForm();
+          successPopup().then(() => {});
         },
         () => {
           errorPopup().then(() => {
@@ -268,8 +272,9 @@ const enableValidation = (resetMarker) => {
 const enableAdForm = (setMarkerMoveHandler, resetMarker) => {
   enableForm(form, 'ad-form--disabled');
 
-  const addressField = form.querySelector('#address');
   addressField.setAttribute('readonly', 'readonly');
+  addressField.value = `${mainPin.lat}, ${mainPin.lng}`;
+
   setMarkerMoveHandler((coords) => {
     addressField.value = coords;
   });

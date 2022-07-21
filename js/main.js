@@ -8,9 +8,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   disableAdForm();
   disableFilterForm();
 
-  const { setMarkerMoveHandler, resetMarker, setMarkers } = await enableMap();
+  const { setMarkerMoveHandler, resetMarker, setMarkers, closePlacePopup } =
+    await enableMap();
 
-  enableAdForm(setMarkerMoveHandler, resetMarker);
+  enableAdForm(setMarkerMoveHandler, resetMarker, closePlacePopup);
 
   try {
     const offers = await getData();

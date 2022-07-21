@@ -12,11 +12,6 @@ const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const closePopup = (element) => {
   element.remove();
-
-  const mapPopup = document.querySelector('.popup');
-  if (mapPopup) {
-    mapPopup.remove();
-  }
   document.removeEventListener('click', onDocumentClick);
 };
 

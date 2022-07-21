@@ -99,7 +99,10 @@ function initMap(map) {
       lat: mainPin.lat,
       lng: mainPin.lng,
     });
+    map.closePopup();
   };
+
+  const closePlacePopup = () => map.closePopup();
 
   const setMarkerMoveHandler = (cb) => {
     marker.on('dragend', () => {
@@ -120,7 +123,8 @@ function initMap(map) {
     setMarkerMoveHandler,
     resetMarker,
     setMarkers,
+    closePlacePopup,
   };
 }
 
-export { enableMap };
+export { enableMap, mainPin };

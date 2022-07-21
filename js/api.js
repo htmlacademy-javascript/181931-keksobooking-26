@@ -21,14 +21,15 @@ const showError = (error) => {
 };
 
 const getData = () =>
-  new Promise((resolve, reject) => {
-    fetch('https://26.javascript.pages.academy/keksobooking/data')
-      .then((response) => response.json())
-      .then((offers) => {
-        resolve(offers);
-      })
-      .catch(reject);
-  });
+  fetch('https://26.javascript.pages.academy/keksobooking/data').then(
+    (response) => {
+      if (!response.ok) {
+        throw new Error('No data');
+      }
+
+      return response.json();
+    }
+  );
 
 const sendData = (onSuccess, onFail, body) => {
   fetch('https://26.javascript.pages.academy/keksobooking', {
