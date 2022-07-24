@@ -1,9 +1,12 @@
+const MIN_PROMT_TEXT = 'Минимальное число должно быть больше или равно 0';
+const MAX_PROMT_TEXT = 'Максимальное число должно быть больше минимального';
+
 function getRandomPositiveNumber(min, max) {
   if (min < 0) {
-    return 'Минимальное число должно быть больше или равно 0';
+    return MIN_PROMT_TEXT;
   }
   if (max <= min) {
-    return 'Максимальное число должно быть больше минимального';
+    return MAX_PROMT_TEXT;
   }
   min = Math.floor(min);
   max = Math.round(max);
@@ -12,10 +15,10 @@ function getRandomPositiveNumber(min, max) {
 
 function getRandomPositiveFloatNumber(min, max, count) {
   if (min < 0) {
-    return 'Минимальное число должно быть больше или равно 0';
+    return MIN_PROMT_TEXT;
   }
   if (max <= min) {
-    return 'Максимальное число должно быть больше минимального';
+    return MAX_PROMT_TEXT;
   }
   return parseFloat((Math.random() * (max - min) + min).toFixed(count));
 }
@@ -80,7 +83,7 @@ const setAttributes = (el, attrs) => {
   }
 };
 
-const numWord = (value, words) => {
+const inclineWord = (value, words) => {
   value = Math.abs(value) % 100;
   const num = value % 10;
   if (value > 10 && value < 20) {
@@ -150,7 +153,7 @@ export {
   removeElement,
   hideElement,
   setAttributes,
-  numWord,
+  inclineWord,
   disableForm,
   enableForm,
   changePlaceholderAndAttr,

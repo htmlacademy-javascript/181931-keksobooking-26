@@ -1,5 +1,7 @@
 const ALERT_SHOW_TIME = 5000;
 const URL = 'https://26.javascript.pages.academy/keksobooking/';
+const ERROR_SEND_TEST = 'Не удалось отправить форму. Попробуйте ещё раз';
+const ERROR_GET_DATA_TEXT = 'Не удалось получить данные. Попробуйте ещё раз';
 
 const showError = (error) => {
   const errorContainer = document.createElement('div');
@@ -30,7 +32,7 @@ const getData = () =>
 
       return response.json();
     })
-    .catch(() => showError('Не удалось получить данные. Попробуйте ещё раз'));
+    .catch(() => showError(ERROR_GET_DATA_TEXT));
 
 const sendData = (onSuccess, onFail, body) => {
   fetch(URL, {
@@ -41,11 +43,11 @@ const sendData = (onSuccess, onFail, body) => {
       if (response.ok) {
         onSuccess();
       } else {
-        onFail('Не удалось отправить форму. Попробуйте ещё раз');
+        onFail(ERROR_SEND_TEST);
       }
     })
     .catch(() => {
-      onFail('Не удалось отправить форму. Попробуйте ещё раз');
+      onFail(ERROR_SEND_TEST);
     });
 };
 

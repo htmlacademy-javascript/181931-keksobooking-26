@@ -3,7 +3,7 @@ import {
   setElementContent,
   removeElement,
   setAttributes,
-  numWord,
+  inclineWord,
 } from './utils.js';
 
 const cardTemplate = document
@@ -26,9 +26,9 @@ const createCardElement = ({ offer, author }) => {
   createElement('.popup__type', TYPE[offer.type]);
   createElement(
     '.popup__text--capacity',
-    `${offer.rooms} ${numWord(offer.rooms, DECLENSIONS.rooms)} для ${
+    `${offer.rooms} ${inclineWord(offer.rooms, DECLENSIONS.rooms)} для ${
       offer.guests
-    } ${numWord(offer.guests, DECLENSIONS.guests)} `
+    } ${inclineWord(offer.guests, DECLENSIONS.guests)} `
   );
   createElement(
     '.popup__text--time',
